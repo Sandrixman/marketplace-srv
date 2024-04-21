@@ -1,7 +1,15 @@
-#Junk
+# Junk
 .DS_Store
 .vscode/
 .idea/
+
+# Generated files
+storage/*
+!storage/images
+storage/images/*
+!storage/images/products
+storage/images/products/*
+!storage/images/products/.gitkeep
 
 # Logs
 logs

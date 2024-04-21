@@ -2,7 +2,6 @@ import {
     Controller,
     Get,
     Post,
-    Req,
     Res,
     Put,
     Delete,
@@ -10,11 +9,16 @@ import {
     ParseIntPipe,
     Body,
     HttpStatus,
+    UseInterceptors,
+    UploadedFile,
 } from "@nestjs/common"
-import { Response, Request } from "express"
+import { Response } from "express"
+import { FileInterceptor } from "@nestjs/platform-express"
 
 import { ProductService } from "./product.service"
-import { UpdateProductDto } from "./dto/updateProduct.dto"
+import { ProductDto } from "./dto/product.dto"
+import { getMulterOptions, renameUploadedFile } from "@helpers/fileUploader"
+import { PRODUCTS_IMAGES_FOLDER_PATH } from "src/consts/storagePaths"
 
 @Controller("products")
 export class ProductController {
@@ -39,8 +43,19 @@ export class ProductController {
     }
 
     @Post("/")
-    async createProduct(@Req() req: Request, @Res() res: Response) {
-        const productData = await this.productService.createProduct(req.body)
+    @UseInterceptors(FileInterceptor("image", getMulterOptions("images/products")))
+    async createProduct(
+        @Body() body: any,
+        @UploadedFile() image: Express.Multer.File,
+        @Res() res: Response
+    ) {
+        const renamedFilename = renameUploadedFile(image.filename, PRODUCTS_IMAGES_FOLDER_PATH)
+
+        const productData = await this.productService.createProduct({
+            ...body,
+            image: renamedFilename,
+        })
+
         return res.status(HttpStatus.CREATED).send({
             data: productData,
         })
@@ -49,7 +64,7 @@ export class ProductController {
     @Put("/:id")
     async updateProduct(
         @Param("id", ParseIntPipe) id: number,
-        @Body() body: UpdateProductDto,
+        @Body() body: ProductDto,
         @Res() res: Response
     ) {
         const productData = this.productService.updateProductData(id, body)

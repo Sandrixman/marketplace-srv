@@ -10,7 +10,7 @@ import { UpdateUserDto } from "./dto/updateUser.dto"
 export class UserService {
     constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
 
-    availableFields = ["nameFirst", "nameLast", "email", "gender", "birthDate"]
+    availableFields = ["nameFirst", "nameLast", "email", "gender"]
 
     // Filter body's fileds from available fields list
     private filterFields(body: { [k: string]: any }) {
@@ -29,7 +29,7 @@ export class UserService {
     public async createUser(userData: any) {
         const salt = await genSalt(10)
 
-        const hashedPassword = await hash(userData.password, salt)
+        const hashedPassword = await hash(userData.password.toString(), salt)
 
         const newUser = this.userRepository.create({
             ...userData,

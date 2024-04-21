@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm"
 import { FindOptionsSelect, Repository } from "typeorm"
 
 import { Product } from "./product.entity"
-import { UpdateProductDto } from "./dto/updateProduct.dto"
+import { ProductDto } from "./dto/product.dto"
 
 @Injectable()
 export class ProductService {
@@ -11,11 +11,11 @@ export class ProductService {
         @InjectRepository(Product) private readonly productRepository: Repository<Product>
     ) {}
 
-    availableFields = ["title", "description", "price", "price_discounted", "image"]
+    availableFields = ["title", "description", "price", "priceDiscounted", "image"]
 
     // Create new product
     public async createProduct(productData: any) {
-        const newProduct = this.productRepository.create(productData)
+        const newProduct = this.productRepository.create({ ...productData })
 
         return await this.productRepository.save(newProduct)
     }
@@ -36,7 +36,7 @@ export class ProductService {
     }
 
     // Update product data whole
-    public async updateProductData(id: number, body: UpdateProductDto) {
+    public async updateProductData(id: number, body: ProductDto) {
         return await this.productRepository.update({ id }, body)
     }
 

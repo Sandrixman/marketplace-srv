@@ -1,8 +1,6 @@
 import { IsString, MinLength, IsNumber } from "class-validator"
 
-import { E_Gender } from "../types"
-
-export class UpdateProductDto {
+export class ProductDto {
     @IsString()
     @MinLength(1)
     title: string

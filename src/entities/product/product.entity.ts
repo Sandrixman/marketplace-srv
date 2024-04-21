@@ -11,12 +11,12 @@ export class Product {
     @Column({ name: "description", type: "varchar" })
     description: string
 
-    @Column({ name: "price", type: "varchar" })
+    @Column({ name: "price", type: "int" })
     price: number
 
-    @Column({ name: "price_discounted", type: "varchar" })
+    @Column({ name: "price_discounted", type: "int" })
     priceDiscounted: number
 
-    @Column({ name: "image", type: "timestamp", nullable: true })
+    @Column({ name: "image", type: "varchar", nullable: true })
     image: string
 }
